@@ -1,6 +1,9 @@
-import Header from '@/components/Header';
-import Head from 'next/head';
 
+import Banner from '@/components/Banner';
+import BannerImage from '@/assets/banner1.png';
+
+import Head from 'next/head';
+import styled from 'styled-components';
 
 export default function Home() {
   return (
@@ -11,11 +14,13 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/logo.ico" />
       </Head>
-      <>
-        <Header />
-        <h1>HOME PAGE</h1>
-      </>
+      <Main>
+        <Banner image={BannerImage} width={1140} heigth={325} />
+      </Main>
 
     </>
   )
 }
+const Main = styled.main`
+    min-height: 62vh;
+ `;
