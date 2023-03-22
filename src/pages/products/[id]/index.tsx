@@ -4,20 +4,11 @@ import Image from "next/image";
 
 import ShoppingCartLogo from "../../../../public/images/carrinho-white.png";
 import BannerImage from "../../../../src/assets/banner2.png";
-interface Product {
-    _id: string;
-    name: string;
-    image: string;
-    price: number;
-    formattedPrice: string;
-    splitPrice: string;
-    fileName: string;
-    description: string;
-    summary: string;
-}
+import { IProduct } from "@/types";
+
 
 interface ProductsProps {
-    product: Product;
+    product: IProduct;
 }
 
 import {
@@ -37,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     const productId = ctx.params?.id;
     const api = 'http://localhost:8080';
     const result = await fetch(`${api}/products/${productId}`);
-    const product: Product = await result.json();
+    const product: IProduct = await result.json();
 
     product.image = `${api}/uploads/${product.fileName}`;
     product.formattedPrice = (new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })).format(product.price);

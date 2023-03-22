@@ -2,22 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { ProductContainer, ProductItem, ProductList, ProductName, ProductPrice, ProductSplitPrice, Title } from "./styles";
 import { StaticImageData } from 'next/image';
+import { IProduct } from "@/types";
 
-export interface Product {
-    _id: string;
-    name: string;
-    image: StaticImageData;
-    price: string;
-    formattedPrice: string;
-    splitPrice: string;
-    times: number | string;
-    description: string;
-}
 
 
 
 interface ProductsProps {
-    products: Product[];
+    products: IProduct[];
 }
 
 export default function Product({ products }: ProductsProps) {
@@ -44,7 +35,7 @@ export default function Product({ products }: ProductsProps) {
 
                             <ProductPrice>{product.formattedPrice}</ProductPrice>
                             <ProductSplitPrice>
-                                {product.times} de R$ {product.splitPrice} sem juros
+                                10x de {product.splitPrice} sem juros
                             </ProductSplitPrice>
                         </ProductItem>
                     ))}
