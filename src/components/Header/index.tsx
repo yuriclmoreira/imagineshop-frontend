@@ -11,7 +11,7 @@ export default function Header() {
         <StyledHeader>
             <Navbar>
 
-                <Image src={Logo} width={200} height={100} alt="Logo" />
+                <Image src={Logo} width={100} height={50} alt="Logo" />
                 <MenuList>
                     <MenuItem>
                         <Link href="/">
@@ -27,7 +27,7 @@ export default function Header() {
                     </MenuItem>
                     <MenuItem>
                         <Link href="/shooping-card">
-                            <Image src={ShoppingCartLog} width={52} height={52} alt="shopping cart image" />
+                            <Image src={ShoppingCartLog} width={40} height={40} alt="shopping cart image" />
                         </Link>
 
                     </MenuItem>
