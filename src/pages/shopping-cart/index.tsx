@@ -4,7 +4,7 @@ import { faX } from '@fortawesome/free-solid-svg-icons';
 import { ShoppingCartContext } from "@/contexts/ShoppingCartContext";
 import { IProduct } from "@/types";
 import Image from "next/image";
-import { ButtonContainer, DeleteIcon, Main, Product, ProductName, ProductPrice, Separator, ShoppingCartContainer, SubTitle, Title } from "./styles";
+import { Button, ButtonContainer, DeleteIcon, InputGroup, LoginTitle, Main, PaymentShipping, PaymentTitle, PaymentTotal, PaymentValue, Product, ProductName, ProductPrice, Separator, ShoppingCartContainer, ShoppingCartPayment, SubTitle, Title } from "./styles";
 
 
 export default function ShoppingCart() {
@@ -29,10 +29,10 @@ export default function ShoppingCart() {
                 <SubTitle>Produtos</SubTitle>
                 <ShoppingCartContainer>
                     <section>
-                        <Separator />
                         {
                             products && products.map(product => (
                                 <div key={product._id}>
+                                    <Separator />
                                     <ButtonContainer>
                                         <button>
 
@@ -46,12 +46,33 @@ export default function ShoppingCart() {
                                         <ProductName>{product.name}</ProductName>
                                         <ProductPrice>{product.formattedPrice}</ProductPrice>
                                     </Product>
-                                    <Separator />
+
                                 </div>
                             ))
                         }
                     </section>
+                    <section>
+                        <ShoppingCartPayment>
+                            <PaymentTitle>Resumo do pedido</PaymentTitle>
+                            <PaymentValue><span>{products.length} Produtos</span> <span>R$00,00</span></PaymentValue>
+                            <PaymentShipping><span>Frete</span> <span>R$00,00</span></PaymentShipping>
 
+                            <PaymentTotal><span>Total</span> <span>R$00,00</span></PaymentTotal>
+                            <Separator />
+                            <LoginTitle>Login</LoginTitle>
+                            <InputGroup>
+                                <span>E-mail:</span>
+                                <input type="text" />
+                            </InputGroup>
+                            <InputGroup>
+                                <span>Senha:</span>
+                                <input type="password" />
+                            </InputGroup>
+                            <Button>
+                                Continuar
+                            </Button>
+                        </ShoppingCartPayment>
+                    </section>
                 </ShoppingCartContainer>
             </Main>
         </>
