@@ -5,6 +5,7 @@ import { config } from '@fortawesome/fontawesome-svg-core';
 import '@fortawesome/fontawesome-svg-core/styles.css';
 import GlobalStyle from '@/styles/globals';
 import Layout from '@/components/Layout';
+import ShoppingCartProvider from '@/contexts/ShoppingCartContext';
 
 config.autoAddCss = false;
 
@@ -21,9 +22,11 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <ThemeProvider theme={theme}>
         <GlobalStyle />
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        <ShoppingCartProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ShoppingCartProvider>
       </ThemeProvider>
 
     </>

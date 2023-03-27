@@ -26,7 +26,7 @@ export default function Header() {
                         </Link>
                     </MenuItem>
                     <MenuItem>
-                        <Link href="/shooping-card">
+                        <Link href="/shopping-cart">
                             <Image src={ShoppingCartLog} width={40} height={40} alt="shopping cart image" />
                         </Link>
 
