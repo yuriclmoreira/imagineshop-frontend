@@ -1,5 +1,8 @@
 import { useContext, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Head from "next/head";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { faX } from '@fortawesome/free-solid-svg-icons';
 import { ShoppingCartContext } from "@/contexts/ShoppingCartContext";
 import { IProduct } from "@/types";
@@ -13,17 +16,82 @@ export default function ShoppingCart() {
         deleteProduct,
         getTotalProducts,
         getTotalValue,
-        getShippingValue } = useContext(ShoppingCartContext);
+        getShippingValue,
+        clearAll
+    } = useContext(ShoppingCartContext);
     const [products, setProduts] = useState<IProduct[]>([]);
     const [refresh, setRefresh] = useState<number>(0);
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const router = useRouter();
+
     useEffect(() => {
         const values = getProducts();
         setProduts(values)
     }, [refresh])
 
     const handleDeleteProduct = (id: string) => {
+        toast.error("Produto removido do carrinho", {
+            position: "bottom-right",
+            autoClose: 3000
+        });
         deleteProduct(id);
         setRefresh(oldValue => oldValue + 1)
+    }
+
+    const handleSubmit = async (event: any) => {
+        event.preventDefault();
+        const api = 'http://localhost:8080';
+        const token = await getTokenLogin(api, email, password);
+        if (!token) {
+            toast.error("Login inválido", {
+                position: "bottom-right",
+                autoClose: 3000
+            });
+            return;
+        }
+        const productIds: string[] = [];
+        products.map(product => productIds.push(product._id));
+        const sell = await sellProducts(api, token, productIds);
+        if (!sell) {
+            toast.error("Compra inválida", {
+                position: "bottom-right",
+                autoClose: 3000
+            });
+            return;
+        }
+
+        clearAll();
+        router.push('/success')
+    }
+
+    const getTokenLogin = async (api: string, email: string, password: string): Promise<string | null> => {
+
+        const result = await fetch(`${api}/login`, {
+            method: 'POST',
+            body: JSON.stringify({ email: email, password: password }),
+            headers: { 'Content-type': 'application/json ' }
+        });
+        if (result.status !== 200) {
+            return null;
+        }
+        const { token } = await result.json();
+        return token;
+    }
+
+    const sellProducts = async (api: string, token: string, products: string[]): Promise<string | null> => {
+        const result = await fetch(`${api}/products/sell`, {
+            method: 'POST',
+            body: JSON.stringify({ products }),
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        if (result.status !== 200) {
+            return null;
+        }
+        return 'success';
     }
     return (products && products.length > 0 ? (
         <>
@@ -71,19 +139,20 @@ export default function ShoppingCart() {
                             <LoginTitle>Login</LoginTitle>
                             <InputGroup>
                                 <span>E-mail:</span>
-                                <input type="text" />
+                                <input type="text" value={email || ''} onChange={(e) => setEmail(e.currentTarget.value)} />
                             </InputGroup>
                             <InputGroup>
                                 <span>Senha:</span>
-                                <input type="password" />
+                                <input type="password" value={password || ''} onChange={(e) => setPassword(e.currentTarget.value)} />
                             </InputGroup>
-                            <Button>
+                            <Button type="submit" onClick={handleSubmit}>
                                 Continuar
                             </Button>
                         </ShoppingCartPayment>
                     </section>
                 </ShoppingCartContainer>
             </Main>
+            <ToastContainer />
         </>
     ) : (
         <>
