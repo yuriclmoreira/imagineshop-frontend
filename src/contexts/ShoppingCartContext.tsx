@@ -8,36 +8,33 @@ interface ShoppingCart {
   getTotalValue: () => string;
   getTotalProducts: () => string;
   getShippingValue: () => string;
+  clearAll: () => void;
 }
 
-export const ShoppingCartContext = createContext<ShoppingCart>(
-  {} as ShoppingCart
-);
+export const ShoppingCartContext = createContext<ShoppingCart>({} as ShoppingCart);
 
 const ShoppingCartProvider = ({ children }: any) => {
-  const isBrowser = typeof window !== "undefined";
-  const SESSION_STORAGE = "products";
+  const isBrowser = typeof window !== 'undefined';
+  const SESSION_STORAGE = 'products';
   const ShippingValue = 100;
-
 
   const addProduct = (product: IProduct) => {
     const products = getProducts();
-    const findProduct = products.find(prod => prod._id === product._id);
-    if (findProduct) return;
-    products.push(product);
-
+    const productAlreadyExists = products.find(prod => prod._id === product._id);
+    if (productAlreadyExists) return;
+    products.push(product)
     if (isBrowser) {
-      sessionStorage.setItem(SESSION_STORAGE, JSON.stringify(products));
+      sessionStorage.setItem(SESSION_STORAGE, JSON.stringify(products))
     }
-  };
+  }
 
   const getProducts = (): IProduct[] => {
     if (isBrowser) {
-      const products = sessionStorage.getItem(SESSION_STORAGE);
-      return products ? JSON.parse(products) : [];
+      const products = sessionStorage.getItem(SESSION_STORAGE)
+      return products ? JSON.parse(products) : []
     }
     return [];
-  };
+  }
 
   const deleteProduct = (id: string): void => {
     const products = getProducts();
@@ -49,17 +46,24 @@ const ShoppingCartProvider = ({ children }: any) => {
 
   const getTotalProducts = (): string => {
     const products = getProducts();
-    const total = products.reduce((sum, cur) => sum + cur.price, 0);
-    return (new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })).format(total);
-  }
+    const total = products.reduce((acc, cur) => Number(acc) + Number(cur.price), 0);
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(Number(total));
+  };
 
   const getTotalValue = (): string => {
     const products = getProducts();
-    const total = products.reduce((acc, cur) => acc + cur.price, 0);
-    return (new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })).format(total + ShippingValue);
-  }
+    const total = products.reduce((acc, cur) => Number(acc) + Number(cur.price), 0);
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(Number(total) + Number(ShippingValue));
+  };
+
   const getShippingValue = (): string => {
-    return (new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' })).format(ShippingValue);
+    return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', }).format(Number(ShippingValue));
+  };
+
+  const clearAll = (): void => {
+    if (isBrowser) {
+      sessionStorage.clear();
+    }
   }
 
   return (
@@ -67,13 +71,14 @@ const ShoppingCartProvider = ({ children }: any) => {
       addProduct,
       getProducts,
       deleteProduct,
-      getTotalProducts,
       getTotalValue,
-      getShippingValue
+      getTotalProducts,
+      getShippingValue,
+      clearAll
     }}>
       {children}
     </ShoppingCartContext.Provider>
-  );
-};
+  )
+}
 
 export default ShoppingCartProvider;
